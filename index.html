@@ -109,6 +109,7 @@ ${cards?`<div class="mini-products">${cards}</div>`:`<div class="empty">No makeu
 <div class="panel"><div class="reminder-row"><span>Products not used yet</span><button class="btn small ghost" id="unusedReminder">${unused.length} items ↗</button></div><div class="reminder-row"><span>Opened products to check</span><button class="btn small ghost" id="expiryReminder">${opened.length} items ↗</button></div><div id="reminderDetails"></div></div>
 <div class="subhead"><h2>Recent journal</h2></div>
 ${recent.map(e=>`<div class="entry"><div class="entry-date">${esc(prettyDate(e.date))}</div><div class="entry-title">${esc(e.title||"Daily makeup")}</div><div class="entry-notes">${esc(e.notes||"")}</div></div>`).join("")||`<div class="empty">Your journal entries will appear here.</div>`}`;
+}
 async function calendarHTML() {
   const year = calMonth.getFullYear();
   const month = calMonth.getMonth();
