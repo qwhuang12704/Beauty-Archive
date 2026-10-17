@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eaf0f3">
+<title>Beauty Archive</title>
+<style>
+:root{--bg:#eaf0f3;--card:#f4f7f8;--ink:#344b5c;--muted:#7c8e9a;--line:#ccd6dc;--accent:#e94a67;--white:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif}
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.app{max-width:760px;margin:0 auto;min-height:100vh;background:linear-gradient(140deg,#edf2f5,#e7edf0)}
+.top{padding:26px 22px 10px;display:flex;justify-content:space-between;align-items:center}.brand{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}.today{font:12px Arial,sans-serif;color:var(--muted)}
+main{padding:10px 20px 30px}.heading{font-size:36px;font-weight:400;letter-spacing:-.04em;margin:10px 0 4px}.sub{font-size:13px;color:var(--muted);margin:0 0 22px}
+.tabs{display:flex;gap:20px;overflow:auto;white-space:nowrap;border-bottom:1px solid var(--line);margin-bottom:18px;padding-bottom:12px}.tab{background:none;border:0;padding:4px 0;color:var(--muted);font-size:14px}.tab.active{color:var(--ink);border-bottom:1px solid var(--ink)}
+.toolbar{display:flex;gap:10px;align-items:center;margin:12px 0 20px}.search{flex:1;min-width:0;border:0;border-bottom:1px solid var(--line);background:transparent;padding:10px 4px;font-size:13px;outline:none}.sort{max-width:125px;border:0;border-bottom:1px solid var(--line);background:transparent;padding:9px 0;font-size:13px}
+.btn{border:1px solid var(--ink);background:transparent;border-radius:24px;padding:10px 15px;font:12px Arial,sans-serif}.btn.primary{background:var(--ink);color:white}.btn.small{padding:7px 10px}.btn.ghost{border-color:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}.product{min-width:0}.product-image{aspect-ratio:1/1;background:#e1e8ec;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}.product-image img{width:100%;height:100%;object-fit:contain}.placeholder{font-size:44px;color:#a9b7c0}.category-label{font-size:11px;color:var(--muted);margin:0 0 8px}.product-name{text-align:center;font-size:22px;line-height:1.25;margin:12px 0 2px;overflow-wrap:anywhere}.product-shade{text-align:center;font-size:17px;margin:0 0 10px;overflow-wrap:anywhere}.product-meta{text-align:center;font-size:12px;color:var(--muted);line-height:1.7}.product-actions{display:flex;gap:6px;justify-content:center;margin-top:9px}.product-actions button{border:0;background:none;color:var(--muted);font:11px Arial,sans-serif;text-decoration:underline;padding:4px}
+.empty{padding:34px 16px;text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);line-height:1.7}
+.section-title{font-size:22px;font-weight:400;margin:18px 0 12px}.panel{background:rgba(255,255,255,.42);padding:15px;border:1px solid rgba(204,214,220,.65);margin-bottom:14px}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0;font:12px Arial,sans-serif;color:var(--muted)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.5);padding:11px;border-radius:2px;font:14px Arial,sans-serif;color:var(--ink);outline:none}.field textarea{min-height:85px;resize:vertical}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}.hidden{display:none!important}
+.dashboard-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 24px}
+.dashboard-top .heading{font-size:34px;margin:0}.dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 16px;margin:24px 0}
+.dash-stat{padding:12px 0 18px;border-bottom:1px solid var(--line)}.dash-label{font-size:13px;color:var(--muted);margin-bottom:16px}
+.dash-number{font-size:40px;line-height:1.05}.dash-unit{font-size:12px;color:var(--muted);margin-left:5px}
+.dash-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
+.subhead{display:flex;justify-content:space-between;align-items:center;margin:26px 0 14px}.subhead h2{font-size:20px;font-weight:400;margin:0}
+.mini-products{display:flex;gap:14px;overflow:auto;padding:4px 0 12px}.mini-product{width:92px;flex:0 0 92px;text-align:center;font-size:12px}
+.mini-image{height:78px;background:#e1e8ec;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px}.mini-image img{width:100%;height:100%;object-fit:contain}
+.reminder-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 0;border-bottom:1px solid var(--line);font-size:13px}
+.palette-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.palette{border:1px solid var(--line);background:transparent;padding:8px;text-align:left}
+.palette.active{outline:1px solid var(--ink)}.swatches{display:flex;height:34px;margin-bottom:8px}.swatches span{flex:1}.palette-name{font-size:12px}
+.segmented{display:flex;gap:18px;margin:14px 0}.segmented button{background:none;border:0;padding:8px 0;color:var(--muted);border-bottom:1px solid transparent}.segmented button.active{color:var(--ink);border-color:var(--ink)}
+@media(min-width:600px){.dashboard-top .heading{font-size:42px}.dash-grid{gap:20px 28px}}
+.entry{padding:14px 0;border-bottom:1px solid var(--line)}.entry-date{font-size:12px;color:var(--muted);margin-bottom:5px}.entry-title{font-size:20px;margin-bottom:5px}.entry-notes{font-size:13px;line-height:1.6;white-space:pre-wrap}.entry-photos{display:flex;gap:8px;overflow:auto;margin-top:10px}.entry-photos img{width:90px;height:90px;object-fit:cover;background:#dce5e9}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;margin:12px 0 15px}.calendar-month{font-size:22px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.day-name{text-align:center;font:10px Arial,sans-serif;color:var(--muted);padding:7px 0}.day{aspect-ratio:1/1;border:0;background:rgba(255,255,255,.45);font:12px Arial,sans-serif;position:relative}.day.muted{opacity:.35}.day.selected{outline:1px solid var(--ink)}.day.has-entry:after{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);position:absolute;bottom:5px;left:calc(50% - 2.5px)}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{padding:16px;background:rgba(255,255,255,.48);border:1px solid rgba(204,214,220,.65)}.stat-number{font-size:30px;margin:0 0 4px}.stat-label{font:11px Arial,sans-serif;color:var(--muted)}.barrow{display:grid;grid-template-columns:minmax(70px,1fr) 2fr 28px;align-items:center;gap:8px;margin:12px 0;font:12px Arial,sans-serif}.bar{height:7px;background:#d5dfe4}.bar span{display:block;height:100%;background:#8ea3b0}.notice{font:12px Arial,sans-serif;color:var(--muted);line-height:1.5;padding:12px;background:rgba(255,255,255,.35);margin-top:16px}
+nav{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:9px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(234,240,243,.95);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);max-width:760px;margin:auto}
+.navbtn{border:0;background:none;color:var(--muted);font-size:11px;display:flex;align-items:center;flex-direction:column;gap:5px;padding:4px}.navbtn .ico{font:20px Arial,sans-serif}.navbtn.active{color:var(--ink)}.navbtn.active:after{content:"";width:20px;height:1px;background:var(--ink)}
+.modal-backdrop{position:fixed;inset:0;z-index:10;background:#263b4b66;display:flex;align-items:flex-end;justify-content:center;padding:12px}.modal{background:var(--bg);width:100%;max-width:650px;max-height:92vh;overflow:auto;padding:20px 18px calc(22px + env(safe-area-inset-bottom));box-shadow:0 4px 40px #22334420}.modal-top{display:flex;justify-content:space-between;align-items:center}.modal-title{font-size:26px;font-weight:400;margin:0}.close{border:0;background:none;font-size:25px;color:var(--muted)}.photo-preview{display:flex;gap:8px;flex-wrap:wrap}.photo-preview img{width:70px;height:70px;object-fit:cover}
+@media(min-width:600px){main{padding-left:30px;padding-right:30px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}.heading{font-size:42px}.modal-backdrop{align-items:center}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand">Beauty Archive</div><div class="today" id="todayLabel"></div></header>
+<main id="main"></main>
+<nav>
+<button class="navbtn active" data-page="journal"><span class="ico">▤</span>Journal</button>
+<button class="navbtn" data-page="collection"><span class="ico">▣</span>Collection</button>
+<button class="navbtn" data-page="calendar"><span class="ico">▦</span>Calendar</button>
+<button class="navbtn" data-page="insights"><span class="ico">▥</span>Insights</button>
+</nav>
+</div>
+<div id="modalRoot"></div>
+<script>
+const CATEGORIES=["Eyeshadow","Blush","Lipstick","Foundation","Other"];
+const DB_NAME="beauty-archive-db", STORE="photos";
+let db, page="journal", category="All", searchTerm="", sortBy="newest", selectedDate=localDate(), calMonth=new Date(), insightPeriod="month", themeName=load("ba-theme","ice");
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function prettyDate(s){if(!s)return "";const d=new Date(s+"T12:00:00");return d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function load(key,def){try{return JSON.parse(localStorage.getItem(key))??def}catch{return def}}
+function save(key,val){localStorage.setItem(key,JSON.stringify(val))}
+let products=load("ba-products",[]), entries=load("ba-entries",[]);
+function initDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>req.result.createObjectStore(STORE);req.onsuccess=()=>{db=req.result;resolve()};req.onerror=()=>reject(req.error)})}
+function putPhoto(id,blob){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(blob,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function getPhoto(id){return new Promise(resolve=>{if(!id||!db)return resolve("");const req=db.transaction(STORE).objectStore(STORE).get(id);req.onsuccess=()=>{if(req.result){const url=URL.createObjectURL(req.result);resolve(url)}else resolve("")};req.onerror=()=>resolve("")})}
+function delPhoto(id){if(!id||!db)return;db.transaction(STORE,"readwrite").objectStore(STORE).delete(id)}
+async function photoHTML(id,cls=""){const url=await getPhoto(id);return url?`<img class="${cls}" src="${url}" alt="">`:""}
+
+const THEMES={
+ ice:{name:"冰蓝灰",bg:"#eaf0f3",ink:"#344b5c",muted:"#7c8e9a",line:"#ccd6dc",swatches:["#506b82","#8fa7ba","#b9cbd7","#dbe3e7","#f7f9fa"]},
+ rose:{name:"淡雾玫瑰",bg:"#f2e9e8",ink:"#6a4c52",muted:"#9a7e82",line:"#dfcece",swatches:["#72545e","#a77e86","#c9a8aa","#e3ceca","#f7efeb"]},
+ navy:{name:"静谧雾蓝",bg:"#e5eaed",ink:"#354352",muted:"#7d8e9a",line:"#c8d1d8",swatches:["#353b4e","#506b82","#8198a5","#b3c0c5","#eef2f3"]},
+ lilac:{name:"六月绣球",bg:"#ece9f5",ink:"#51486f",muted:"#8981a8",line:"#d4cee5",swatches:["#625bb1","#9274c4","#aa94d5","#c6b6e4","#f4f1fa"]},
+ sea:{name:"地中海假日",bg:"#e7eeee",ink:"#38575b",muted:"#789293",line:"#c8d9d7",swatches:["#587e83","#8caeae","#b8ceca","#d8e4df","#f7f8f2"]},
+ strawberry:{name:"草莓奶油",bg:"#f4e9e5",ink:"#6b4c49",muted:"#9c7d78",line:"#e2cfca",swatches:["#b70d1b","#ed9ba1","#9ca08f","#d4b89a","#f8eee5"]},
+ cloud:{name:"云雾粉灰",bg:"#eee8eb",ink:"#604d59",muted:"#95818c",line:"#d8cbd2",swatches:["#a98191","#c6a6b0","#d8c3c7","#b8aab1","#f6eff1"]}
+};
+function applyTheme(){const t=THEMES[themeName]||THEMES.ice;for(const k of ["bg","ink","muted","line"])document.documentElement.style.setProperty("--"+k,t[k]);document.querySelector('meta[name="theme-color"]').content=t.bg;document.body.style.background=t.bg}
+
+async function render(){ applyTheme(); $("#todayLabel").textContent=new Date().toLocaleDateString(undefined,{day:"numeric",month:"short"});document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));const root=$("#main");if(page==="collection")root.innerHTML=await collectionHTML();else if(page==="journal")root.innerHTML=await journalHTML();else if(page==="calendar")root.innerHTML=await calendarHTML();else if(page==="insights")root.innerHTML=insightsHTML();else root.innerHTML=settingsHTML();bindPage()}
+function shell(title,sub,body){return `<h1 class="heading">${title}</h1><p class="sub">${sub}</p>${body}`}
+async function collectionHTML(){let shown=products.filter(p=>(category==="All"||p.category===category)&&(`${p.brand} ${p.name} ${p.shade} ${p.category}`).toLowerCase().includes(searchTerm.toLowerCase()));shown.sort((a,b)=>sortBy==="name"?a.name.localeCompare(b.name):sortBy==="uses"?(b.uses||0)-(a.uses||0):(b.created||"").localeCompare(a.created||""));let cards="";for(const p of shown){const img=await photoHTML(p.photo);cards+=`<article class="product"><div class="category-label">${esc(p.category)}</div><div class="product-image">${img||`<span class="placeholder">✧</span>`}</div><div class="product-name">${esc(p.brand||"")}</div><div class="product-shade">${esc(p.name)}${p.shade?` · ${esc(p.shade)}`:""}</div><div class="product-meta">${p.uses||0} uses<br>${p.lastUsed?esc(prettyDate(p.lastUsed)):"Not used yet"}</div><div class="product-actions"><button data-use="${p.id}">Log use</button><button data-edit="${p.id}">Edit</button><button data-delete="${p.id}">Delete</button></div></article>`}
+return shell("My collection",`${products.length} ${products.length===1?"item":"items"}`,`<div class="tabs">${["All",...CATEGORIES].map(c=>`<button class="tab ${category===c?"active":""}" data-cat="${c}">${c}</button>`).join("")}</div><div class="toolbar"><input class="search" id="search" placeholder="Search my collection..." value="${esc(searchTerm)}"><select class="sort" id="sort"><option value="newest" ${sortBy==="newest"?"selected":""}>Newest</option><option value="name" ${sortBy==="name"?"selected":""}>Name A–Z</option><option value="uses" ${sortBy==="uses"?"selected":""}>Most used</option></select></div><div style="display:flex;justify-content:flex-end;margin:-4px 0 18px"><button class="btn primary" id="addProduct">+ Add product</button></div>${shown.length?`<div class="grid">${cards}</div>`:`<div class="empty">${products.length?"No products match your search.":"Your collection starts here. Add your first product to begin."}</div>`}`)}
+async function journalHTML(){
+const today=localDate(),monthPrefix=today.slice(0,7),todayEntries=entries.filter(e=>e.date===today),monthEntries=entries.filter(e=>e.date.startsWith(monthPrefix));
+const monthUses=new Set(monthEntries.flatMap(e=>(e.productIds||[]).map(id=>e.date+"|"+id))).size;
+const totalUses=new Set(entries.flatMap(e=>(e.productIds||[]).map(id=>e.date+"|"+id))).size;
+const finished=products.filter(p=>p.finished).length;
+let cards="";
+for(const id of [...new Set(todayEntries.flatMap(e=>e.productIds||[]))]){const p=products.find(x=>x.id===id);if(!p)continue;const img=await photoHTML(p.photo);cards+=`<div class="mini-product"><div class="mini-image">${img||"✧"}</div><div class="mini-name">${esc(p.name)}</div><div class="category-label">${esc(p.category)}</div></div>`}
+const unused=products.filter(p=>!(p.uses||0));
+const opened=products.filter(p=>p.openedDate&&!p.finished&&p.expiryMonths);
+const recent=[...entries].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,3);
+return `<div class="dashboard-top"><div><div class="brand">The beauty journal</div><h1 class="heading">My Journal</h1></div><div class="dashboard-actions"><button class="btn primary" id="addEntry">+ Log today's look</button><button class="btn small ghost" id="openSettings">⚙</button></div></div>
+<p class="sub">${new Date().toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"})} · A little time for yourself.</p>
+<div class="dash-grid">
+<div class="dash-stat"><div class="dash-label">My Makeup</div><div><span class="dash-number">${products.length}</span><span class="dash-unit">items</span></div><div class="dash-note">Finished ${finished} · Total ${products.length}</div></div>
+<div class="dash-stat"><div class="dash-label">This Month</div><div><span class="dash-number">${monthUses}</span><span class="dash-unit">uses</span></div><div class="dash-note">Logged on ${new Set(monthEntries.map(e=>e.date)).size} days this month</div></div>
+<div class="dash-stat"><div class="dash-label">Total Uses</div><div><span class="dash-number">${totalUses}</span><span class="dash-unit">uses</span></div><div class="dash-note">Each product counts once per day.</div></div>
+<div class="dash-stat"><div class="dash-label">Hit Pan / Finished</div><div><span class="dash-number">${finished}</span><span class="dash-unit">items</span></div><div class="dash-note">Small traces of well-loved makeup.</div></div></div>
+<div class="subhead"><h2>Today's makeup</h2><button class="btn small ghost" id="editToday">Edit ↗</button></div>
+${cards?`<div class="mini-products">${cards}</div>`:`<div class="empty">No makeup logged today yet.<br>Record today's look to see your products here.</div>`}
+<div class="subhead"><h2>Drawer reminders</h2><span class="category-label">A gentle nudge</span></div>
+<div class="panel"><div class="reminder-row"><span>Products not used yet</span><button class="btn small ghost" id="unusedReminder">${unused.length} items ↗</button></div><div class="reminder-row"><span>Opened products to check</span><button class="btn small ghost" id="expiryReminder">${opened.length} items ↗</button></div><div id="reminderDetails"></div></div>
+<div class="subhead"><h2>Recent journal</h2></div>
+${recent.map(e=>`<div class="entry"><div class="entry-date">${esc(prettyDate(e.date))}</div><div class="entry-title">${esc(e.title||"Daily makeup")}</div><div class="entry-notes">${esc(e.notes||"")}</div></div>`).join("")||`<div class="empty">Your journal entries will appear here.</div>`}`;
+}
+async function calendarHTML() {
+  const year = calMonth.getFullYear();
+  const month = calMonth.getMonth();
+  const first = new Date(year, month, 1);
+  const offset = (first.getDay() + 6) % 7;
+  const days = new Date(year, month + 1, 0).getDate();
+
+  const activeDates = new Set(entries.map(e => e.date));
+  let cells = "";
+
+  for (let i = 0; i < offset; i++) {
+    cells += `<button class="day muted" disabled></button>`;
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    cells += `<button class="day ${date === selectedDate ? "selected" : ""} ${activeDates.has(date) ? "has-entry" : ""}" data-date="${date}">${d}</button>`;
+  }
+
+  const selected = entries.filter(e => e.date === selectedDate);
+  const entryCards = await Promise.all(
+    selected.map(async e => {
+      const photos = await Promise.all(
+        (e.photos || []).map(id => photoHTML(id))
+      );
+
+      return `<div class="panel">
+        <div style="font-size:18px">${esc(e.title || "Daily makeup")}</div>
+        <p style="font-size:13px;line-height:1.6">${esc(e.notes || "")}</p>
+        <div class="entry-photos">${photos.join("")}</div>
+      </div>`;
+    })
+  );
+
+  const entriesHTML = entryCards.join("") ||
+    `<div class="empty">No entries for this date.</div>`;
+
+  return shell(
+    "Calendar",
+    "Your makeup, day by day.",
+    `<div class="panel">
+      <div class="calendar-head">
+        <button class="btn small ghost" id="prevMonth">‹</button>
+        <div class="calendar-month">${calMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</div>
+        <button class="btn small ghost" id="nextMonth">›</button>
+      </div>
+      <div class="calendar-grid">
+        ${["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => `<div class="day-name">${d}</div>`).join("")}
+        ${cells}
+      </div>
+    </div>
+    <h2 class="section-title">${prettyDate(selectedDate)}</h2>
+    ${entriesHTML}
+    <div style="display:flex;justify-content:flex-end;margin-top:14px">
+      <button class="btn primary" id="addEntryForDate">+ Add entry for this date</button>
+    </div>`
+  );
+}
+
+function insightsHTML(){
+const all=insightPeriod==="all",prefix=localDate().slice(0,7),subset=entries.filter(e=>all||e.date.startsWith(prefix));
+const uses=new Set(subset.flatMap(e=>(e.productIds||[]).map(id=>e.date+"|"+id))).size,days=new Set(subset.map(e=>e.date)).size,usedIds=new Set(subset.flatMap(e=>e.productIds||[])),coverage=products.length?Math.round(usedIds.size/products.length*100):0;
+const counts={};subset.forEach(e=>(e.productIds||[]).forEach(id=>{if(!counts[id])counts[id]=new Set();counts[id].add(e.date)}));
+const top=products.map(p=>({...p,periodUses:counts[p.id]?.size||0})).sort((a,b)=>b.periodUses-a.periodUses).slice(0,5),max=Math.max(1,...top.map(p=>p.periodUses));
+const bars=top.map(p=>`<div class="barrow"><div>${esc(p.brand||p.name)}</div><div class="bar"><span style="width:${Math.round(p.periodUses/max*100)}%"></span></div><div>${p.periodUses}</div></div>`).join("");
+const cats=CATEGORIES.map(c=>({c,n:products.filter(p=>p.category===c).length})).filter(x=>x.n);
+return shell("使用统计","使用频率是喜好的线索，余量由你亲自记录。",`<div class="segmented"><button data-period="month" class="${!all?"active":""}">本月 · ${new Date().getMonth()+1}月</button><button data-period="all" class="${all?"active":""}">全部时间</button></div><div style="margin:14px 0 22px"><button class="btn ghost" id="exportCSV">导出使用明细 CSV ↗</button></div>
+<div class="stats"><div class="stat"><div class="stat-number">${uses}</div><div class="stat-label">使用记录 · 次</div><div class="dash-note">每件产品每天最多计 1 次</div></div><div class="stat"><div class="stat-number">${days}</div><div class="stat-label">记录天数 · 天</div></div><div class="stat"><div class="stat-number">${usedIds.size}</div><div class="stat-label">用过的产品 · 件</div></div><div class="stat"><div class="stat-number">${coverage}<span class="dash-unit">%</span></div><div class="stat-label">收藏覆盖率</div></div></div>
+<h2 class="section-title">使用频率排行</h2><div class="panel">${bars||`<div class="empty">添加产品并记录使用后，这里会显示统计。</div>`}</div>
+<h2 class="section-title">收藏分类</h2><div class="panel">${cats.map(x=>`<div class="barrow"><div>${x.c}</div><div class="bar"><span style="width:${Math.round(x.n/Math.max(1,products.length)*100)}%"></span></div><div>${x.n}</div></div>`).join("")||"还没有添加产品。"}</div>
+<div class="notice">数据保存在当前设备的浏览器中。定期导出备份；CSV 用于分析使用记录，JSON 用于备份产品和日志文本。</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="exportData">Export JSON backup</button><button class="btn ghost" id="importData">Import JSON backup</button><input type="file" id="backupFile" accept="application/json" class="hidden"></div>`)
+}
+function settingsHTML(){return shell("外观与主题","YOUR OWN COLOUR STUDY",`<div class="panel"><p style="font-size:13px;line-height:1.7;color:var(--muted)">选择一组配色，界面会即时更新。</p><div class="palette-grid">${Object.entries(THEMES).map(([id,x])=>`<button class="palette ${id===themeName?"active":""}" data-theme="${id}"><div class="swatches">${x.swatches.map(c=>`<span style="background:${c}"></span>`).join("")}</div><div class="palette-name">${x.name}</div></button>`).join("")}</div><div class="notice">本地数据只保存在当前设备的浏览器中。请定期导出 JSON 备份。</div></div>`)}
+function bindPage(){
+document.querySelectorAll("[data-theme]").forEach(b=>b.onclick=()=>{themeName=b.dataset.theme;save("ba-theme",themeName);render()});
+document.querySelectorAll("[data-period]").forEach(b=>b.onclick=()=>{insightPeriod=b.dataset.period;render()});
+const os=$("#openSettings");if(os)os.onclick=()=>{page="settings";render()};
+const et=$("#editToday");if(et)et.onclick=()=>entryModal(null,localDate());
+const ub=$("#unusedReminder");if(ub)ub.onclick=()=>{const box=$("#reminderDetails"),list=products.filter(p=>!(p.uses||0));box.innerHTML=list.map(p=>`<div class="reminder-row"><span>${esc(p.brand)} ${esc(p.name)}</span><button class="btn small ghost" data-reminder-edit="${p.id}">Edit</button></div>`).join("")||'<p class="dash-note">All products have been used.</p>';box.querySelectorAll("[data-reminder-edit]").forEach(b=>b.onclick=()=>productModal(b.dataset.reminderEdit))};
+const eb=$("#expiryReminder");if(eb)eb.onclick=()=>{const box=$("#reminderDetails"),list=products.filter(p=>p.openedDate&&!p.finished&&p.expiryMonths&&new Date(p.openedDate+"T12:00:00").getTime()+Number(p.expiryMonths)*30.4375*86400000<Date.now());box.innerHTML=list.map(p=>`<div class="reminder-row"><span>${esc(p.brand)} ${esc(p.name)} · ${esc(prettyDate(p.openedDate))}</span><button class="btn small ghost" data-reminder-edit="${p.id}">Edit</button></div>`).join("")||'<p class="dash-note">No products are past the recorded PAO estimate.</p>';box.querySelectorAll("[data-reminder-edit]").forEach(b=>b.onclick=()=>productModal(b.dataset.reminderEdit))};
+const csv=$("#exportCSV");if(csv)csv.onclick=exportCSV;
+document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{category=b.dataset.cat;render()});const search=$("#search");if(search)search.oninput=e=>{searchTerm=e.target.value;const pos=e.target.selectionStart;render().then(()=>{const n=$("#search");if(n){n.focus();n.setSelectionRange(pos,pos)}})};const sort=$("#sort");if(sort)sort.onchange=e=>{sortBy=e.target.value;render()};const add=$("#addProduct");if(add)add.onclick=()=>productModal();document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>productModal(b.dataset.edit));document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.delete));document.querySelectorAll("[data-use]").forEach(b=>b.onclick=()=>quickUse(b.dataset.use));const ae=$("#addEntry");if(ae)ae.onclick=()=>entryModal();const afd=$("#addEntryForDate");if(afd)afd.onclick=()=>entryModal(null,selectedDate);document.querySelectorAll("[data-edit-entry]").forEach(b=>b.onclick=()=>entryModal(b.dataset.editEntry));document.querySelectorAll("[data-delete-entry]").forEach(b=>b.onclick=()=>deleteEntry(b.dataset.deleteEntry));if($("#prevMonth"))$("#prevMonth").onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);render()};if($("#nextMonth"))$("#nextMonth").onclick=()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);render()};document.querySelectorAll("[data-date]").forEach(b=>b.onclick=()=>{selectedDate=b.dataset.date;render()});if($("#exportData"))$("#exportData").onclick=exportBackup;if($("#importData"))$("#importData").onclick=()=>$("#backupFile").click();if($("#backupFile"))$("#backupFile").onchange=importBackup}
+function openModal(title,content){$("#modalRoot").innerHTML=`<div class="modal-backdrop" id="backdrop"><section class="modal"><div class="modal-top"><h2 class="modal-title">${title}</h2><button class="close" id="closeModal">×</button></div>${content}</section></div>`;$("#closeModal").onclick=closeModal;$("#backdrop").onclick=e=>{if(e.target.id==="backdrop")closeModal()}}
+function closeModal(){$("#modalRoot").innerHTML=""}
+function productModal(id){const p=products.find(x=>x.id===id)||{id:"",brand:"",name:"",shade:"",category:"Eyeshadow",uses:0,notes:"",openedDate:"",expiryMonths:"",finished:false};openModal(id?"Edit product":"Add to collection",`<form id="productForm"><div class="form-grid"><label class="field">Brand<input name="brand" value="${esc(p.brand)}" placeholder="e.g. Dior"></label><label class="field">Product name<input name="name" value="${esc(p.name)}" required placeholder="e.g. Backstage Eye Palette"></label><label class="field">Shade / number<input name="shade" value="${esc(p.shade)}" placeholder="e.g. 669"></label><label class="field">Category<select name="category">${CATEGORIES.map(c=>`<option ${p.category===c?"selected":""}>${c}</option>`).join("")}</select></label></div><label class="field">Product photo<input type="file" name="photo" accept="image/*" capture="environment"></label><div class="photo-preview" id="productPreview"></div><div class="form-grid"><label class="field">Opened date<input name="openedDate" type="date" value="${esc(p.openedDate||"")}"></label><label class="field">PAO / months after opening<input name="expiryMonths" type="number" min="1" max="60" value="${esc(p.expiryMonths||"")}" placeholder="e.g. 12"></label></div><label class="checkline"><input name="finished" type="checkbox" ${p.finished?"checked":""}> Hit pan / finished</label><label class="field">Notes<textarea name="notes" placeholder="Finish, formula, purchase date, etc.">${esc(p.notes||"")}</textarea></label><div class="form-actions"><button type="button" class="btn ghost" id="cancelProduct">Cancel</button><button class="btn primary" type="submit">Save product</button></div></form>`);$("#cancelProduct").onclick=closeModal;$("#productForm").elements.photo.onchange=e=>previewFiles(e.target.files,"productPreview");$("#productForm").onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,old=products.find(x=>x.id===id),item={id:id||uid(),brand:f.brand.value.trim(),name:f.name.value.trim(),shade:f.shade.value.trim(),category:f.category.value,notes:f.notes.value.trim(),openedDate:f.openedDate?.value||"",expiryMonths:f.expiryMonths?.value?Number(f.expiryMonths.value):"",finished:!!f.finished?.checked,uses:old?.uses||0,lastUsed:old?.lastUsed||"",photo:old?.photo||"",created:old?.created||localDate()};const file=f.photo.files[0];if(file){if(item.photo)delPhoto(item.photo);item.photo=uid();await putPhoto(item.photo,await compressImage(file,1000,.82))}if(old)products=products.map(x=>x.id===id?item:x);else products.push(item);save("ba-products",products);closeModal();render()}}
+async function previewFiles(files,id){const root=$("#"+id);if(!root)return;root.innerHTML="";for(const f of files){const img=document.createElement("img");img.src=URL.createObjectURL(f);root.append(img)}}
+function compressImage(file,max=1400,quality=.84){return new Promise(resolve=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(blob=>{URL.revokeObjectURL(url);resolve(blob||file)},"image/jpeg",quality)};img.onerror=()=>{URL.revokeObjectURL(url);resolve(file)};img.src=url})}
+function quickUse(id){const p=products.find(x=>x.id===id);if(!p)return;p.uses=(p.uses||0)+1;p.lastUsed=localDate();save("ba-products",products);const existing=entries.find(e=>e.date===localDate()&&e.quickUse);if(existing){if(!existing.productIds.includes(id))existing.productIds.push(id)}else entries.push({id:uid(),date:localDate(),title:"Daily makeup",notes:"",productIds:[id],photos:[],quickUse:true});save("ba-entries",entries);render()}
+function entryModal(id,date=localDate()){const e=entries.find(x=>x.id===id)||{id:"",date,title:"Daily makeup",notes:"",productIds:[],photos:[]};const selected=new Set(e.productIds||[]);openModal(id?"Edit journal entry":"New journal entry",`<form id="entryForm"><label class="field">Date<input name="date" type="date" value="${esc(e.date)}" required></label><label class="field">Title<input name="title" value="${esc(e.title)}" placeholder="e.g. Soft rose look"></label><label class="field">Products used<select name="products" multiple size="5" style="min-height:100px">${products.map(p=>`<option value="${p.id}" ${selected.has(p.id)?"selected":""}>${esc(p.brand? p.brand+" — ":"")}${esc(p.name)}${p.shade?" · "+esc(p.shade):""}</option>`).join("")}</select><span style="font-size:11px">On iPhone, tap to select products; multiple selections may require holding or using the selection menu.</span></label><label class="field">Notes / look details<textarea name="notes" placeholder="What did you wear? How did the products work together?">${esc(e.notes)}</textarea></label><label class="field">Look photos<input type="file" name="photos" accept="image/*" capture="environment" multiple></label><div class="photo-preview" id="entryPreview"></div><div class="form-actions"><button type="button" class="btn ghost" id="cancelEntry">Cancel</button><button type="submit" class="btn primary">Save entry</button></div></form>`);$("#cancelEntry").onclick=closeModal;$("#entryForm").elements.photos.onchange=e=>previewFiles(e.target.files,"entryPreview");$("#entryForm").onsubmit=async ev=>{ev.preventDefault();const f=ev.currentTarget,old=entries.find(x=>x.id===id),newIds=[...f.products.selectedOptions].map(o=>o.value),photoIds=[...(old?.photos||[])];for(const file of f.photos.files){const pid=uid();await putPhoto(pid,await compressImage(file,1400,.82));photoIds.push(pid)}const item={id:id||uid(),date:f.date.value,title:f.title.value.trim()||"Daily makeup",notes:f.notes.value.trim(),productIds:newIds,photos:photoIds};if(old)entries=entries.map(x=>x.id===id?item:x);else entries.push(item);newIds.forEach(pid=>{const p=products.find(x=>x.id===pid);if(p){p.uses=(p.uses||0)+1;p.lastUsed=item.date}});save("ba-products",products);save("ba-entries",entries);closeModal();render()}}
+function deleteProduct(id){const p=products.find(x=>x.id===id);if(!p||!confirm(`Delete ${p.brand} ${p.name} from your collection?`))return;if(p.photo)delPhoto(p.photo);products=products.filter(x=>x.id!==id);save("ba-products",products);render()}
+function deleteEntry(id){if(!confirm("Delete this journal entry?"))return;const e=entries.find(x=>x.id===id);if(e?.photos)e.photos.forEach(delPhoto);entries=entries.filter(x=>x.id!==id);save("ba-entries",entries);render()}
+function exportCSV(){const rows=[["date","journal_title","product_brand","product_name","shade","category","notes"]];entries.forEach(e=>(e.productIds||[]).forEach(id=>{const p=products.find(p=>p.id===id)||{};rows.push([e.date,e.title||"",p.brand||"",p.name||"Deleted product",p.shade||"",p.category||"",e.notes||""])}));const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\\r\\n");const blob=new Blob(["\\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="beauty-archive-usage.csv";a.click();URL.revokeObjectURL(url)}
+function exportBackup(){const data={format:"beauty-archive-backup-v1",exportedAt:new Date().toISOString(),products,entries};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="beauty-archive-backup.json";a.click();URL.revokeObjectURL(url)}
+function importBackup(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.products)||!Array.isArray(d.entries))throw Error();if(confirm("Replace your current product and journal records with this backup? Photos are not included in JSON backups.")){products=d.products;entries=d.entries;save("ba-products",products);save("ba-entries",entries);render()}}catch{alert("This file is not a valid Beauty Archive backup.")}};r.readAsText(file);e.target.value=""}
+document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
+initDB().then(render).catch(()=>{render();alert("Photo storage is unavailable in this browser. Text records may still work.")});
+</script>
+</body>
+</html>
