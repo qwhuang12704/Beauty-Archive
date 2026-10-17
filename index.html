@@ -43,6 +43,14 @@ nav{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:9px 10px calc(8px +
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<script>
+const SUPABASE_URL = 'https://adbzdkyxonvqvhylifsy.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_kBR30lYRviud9-21084o6g_R8_ybZOf';
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+</script>
 <div class="app">
 <header class="top"><div class="brand">Beauty Archive</div><div class="today" id="todayLabel"></div></header>
 <main id="main"></main>
