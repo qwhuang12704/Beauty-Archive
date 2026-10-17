@@ -137,7 +137,10 @@ async function calendarHTML() {
       );
 
       return `<div class="panel">
-        <div style="font-size:18px">${esc(e.title || "Daily makeup")}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div style="font-size:18px">${esc(e.title || "Daily makeup")}</div>
+          <button class="btn small ghost" data-delete-entry="${e.id}">Delete</button>
+        </div>
         <p style="font-size:13px;line-height:1.6">${esc(e.notes || "")}</p>
         <div class="entry-photos">${photos.join("")}</div>
       </div>`;
