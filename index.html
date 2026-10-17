@@ -51,6 +51,17 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 </script>
+<div id="authPanel" style="padding:24px; max-width:420px; margin:40px auto; font-family:Arial,sans-serif;">
+  <h2>Beauty Archive</h2>
+  <p>Sign in to sync your beauty archive across devices.</p>
+  <label for="authEmail">Email</label>
+  <input id="authEmail" type="email" autocomplete="email" placeholder="Your email" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:8px 0 16px;">
+  <label for="authPassword">Password</label>
+  <input id="authPassword" type="password" autocomplete="current-password" placeholder="Your password" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:8px 0 16px;">
+  <button id="signInBtn" type="button">Sign in</button>
+  <button id="signUpBtn" type="button">Create account</button>
+  <p id="authMessage" role="status" aria-live="polite"></p>
+</div>
 <div class="app">
 <header class="top"><div class="brand">Beauty Archive</div><div class="today" id="todayLabel"></div></header>
 <main id="main"></main>
@@ -218,6 +229,60 @@ function exportBackup(){const data={format:"beauty-archive-backup-v1",exportedAt
 function importBackup(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.products)||!Array.isArray(d.entries))throw Error();if(confirm("Replace your current product and journal records with this backup? Photos are not included in JSON backups.")){products=d.products;entries=d.entries;save("ba-products",products);save("ba-entries",entries);render()}}catch{alert("This file is not a valid Beauty Archive backup.")}};r.readAsText(file);e.target.value=""}
 document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
 initDB().then(render).catch(()=>{render();alert("Photo storage is unavailable in this browser. Text records may still work.")});
+</script>
+<script>
+const authPanel = document.getElementById("authPanel");
+const authMessage = document.getElementById("authMessage");
+const appPanel = document.querySelector(".app");
+
+async function updateAuthView() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  authPanel.style.display = session ? "none" : "block";
+  appPanel.style.display = session ? "block" : "none";
+}
+
+document.getElementById("signInBtn").addEventListener("click", async () => {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  authMessage.textContent = "Signing in...";
+
+  const { error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    return;
+  }
+
+  authMessage.textContent = "";
+  await updateAuthView();
+});
+
+document.getElementById("signUpBtn").addEventListener("click", async () => {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  authMessage.textContent = "Creating account...";
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
+
+  authMessage.textContent = error
+    ? error.message
+    : "Account created. Check your email if confirmation is required.";
+});
+
+supabaseClient.auth.onAuthStateChange(() => {
+  updateAuthView();
+});
+
+updateAuthView();
 </script>
 </body>
 </html>
