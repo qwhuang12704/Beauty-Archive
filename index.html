@@ -196,8 +196,18 @@ function insightsHTML(){
 const all=insightPeriod==="all",prefix=localDate().slice(0,7),subset=entries.filter(e=>all||e.date.startsWith(prefix));
 const uses=new Set(subset.flatMap(e=>(e.productIds||[]).map(id=>e.date+"|"+id))).size,days=new Set(subset.map(e=>e.date)).size,usedIds=new Set(subset.flatMap(e=>e.productIds||[])),coverage=products.length?Math.round(usedIds.size/products.length*100):0;
 const counts={};subset.forEach(e=>(e.productIds||[]).forEach(id=>{if(!counts[id])counts[id]=new Set();counts[id].add(e.date)}));
-const top=products.map(p=>({...p,periodUses:counts[p.id]?.size||0})).sort((a,b)=>b.periodUses-a.periodUses).slice(0,5),max=Math.max(1,...top.map(p=>p.periodUses));
-const bars=top.map(p=>`<div class="barrow"><div>${esc(p.brand||p.name)}</div><div class="bar"><span style="width:${Math.round(p.periodUses/max*100)}%"></span></div><div>${p.periodUses}</div></div>`).join("");
+// Aggregate use-days by normalized brand across all products/categories.
+// Normalize Unicode, invisible characters, whitespace and case so variants such as
+// "Chanel", " CHANEL " and strings containing zero-width spaces share one row.
+const brandTotals={};
+products.forEach(p=>{
+  const raw=String(p.brand||p.name||"Unknown brand").normalize("NFKC").replace(/[\u200B-\u200D\uFEFF]/g,"").trim();
+  const key=raw.toLocaleLowerCase().replace(/[\s\p{P}\p{S}]+/gu,"");
+  if(!brandTotals[key])brandTotals[key]={brand:raw,periodUses:0};
+  brandTotals[key].periodUses+=counts[p.id]?.size||0;
+});
+const top=Object.values(brandTotals).sort((a,b)=>b.periodUses-a.periodUses||a.brand.localeCompare(b.brand)).slice(0,5),max=Math.max(1,...top.map(p=>p.periodUses));
+const bars=top.map(p=>`<div class="barrow"><div>${esc(p.brand)}</div><div class="bar"><span style="width:${Math.round(p.periodUses/max*100)}%"></span></div><div>${p.periodUses}</div></div>`).join("");
 const cats=CATEGORIES.map(c=>({c,n:products.filter(p=>p.category===c).length})).filter(x=>x.n);
 return shell("使用统计","使用频率是喜好的线索，余量由你亲自记录。",`<div class="segmented"><button data-period="month" class="${!all?"active":""}">本月 · ${new Date().getMonth()+1}月</button><button data-period="all" class="${all?"active":""}">全部时间</button></div><div style="margin:14px 0 22px"><button class="btn ghost" id="exportCSV">导出使用明细 CSV ↗</button></div>
 <div class="stats"><div class="stat"><div class="stat-number">${uses}</div><div class="stat-label">使用记录 · 次</div><div class="dash-note">每件产品每天最多计 1 次</div></div><div class="stat"><div class="stat-number">${days}</div><div class="stat-label">记录天数 · 天</div></div><div class="stat"><div class="stat-number">${usedIds.size}</div><div class="stat-label">用过的产品 · 件</div></div><div class="stat"><div class="stat-number">${coverage}<span class="dash-unit">%</span></div><div class="stat-label">收藏覆盖率</div></div></div>
